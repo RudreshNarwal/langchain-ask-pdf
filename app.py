@@ -32,18 +32,21 @@ def main():
         length_function=len
       )
       chunks = text_splitter.split_text(text)
+      # st.write(chunks)
       
       # create embeddings
       embeddings = OpenAIEmbeddings()
-      knowledge_base = FAISS.from_texts(chunks, embeddings)
+      knowledge_base = FAISS.from_texts(chunks, embeddings) # Facebook AI semantic search library
       
       # show user input
       user_question = st.text_input("Ask a question about your PDF:")
       if user_question:
         docs = knowledge_base.similarity_search(user_question)
+        # st.write(docs)
         
         llm = OpenAI()
         chain = load_qa_chain(llm, chain_type="stuff")
+        # to check costing and usage
         with get_openai_callback() as cb:
           response = chain.run(input_documents=docs, question=user_question)
           print(cb)
